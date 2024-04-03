@@ -1,0 +1,199 @@
+import { useCallback, useMemo, useState } from "react";
+import {
+  Alert,
+  Avatar,
+  Button,
+  Center,
+  Container,
+  HStack,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Text,
+} from "@chakra-ui/react";
+import { SignClientTypes } from "@walletconnect/types";
+import { buildApprovedNamespaces, getSdkError } from "@walletconnect/utils";
+import { useSnapshot } from "valtio";
+import ModalStore from "@/src/store/ModalStore";
+import { EIP155_CHAINS, EIP155_SIGNING_METHODS } from "@/src/data/EIP155Data";
+import { getChainData } from "@/src/data/chainsUtil";
+import { useAccount } from "wagmi";
+import { web3wallet } from "@/src/utils/WalletConnectUtil";
+import SettingsStore from "@/src/store/SettingsStore";
+
+export default function SessionProposalModal() {
+  const { address } = useAccount();
+
+  const data = useSnapshot(ModalStore.state);
+  const proposal = data?.data
+    ?.proposal as SignClientTypes.EventArguments["session_proposal"];
+  const [isLoadingApprove, setIsLoadingApprove] = useState(false);
+  const [isLoadingReject, setIsLoadingReject] = useState(false);
+
+  const supportedNamespaces = useMemo(() => {
+    // eip155
+    const eip155Chains = Object.keys(EIP155_CHAINS);
+    const eip155Methods = Object.values(EIP155_SIGNING_METHODS);
+
+    return {
+      eip155: {
+        chains: eip155Chains,
+        methods: eip155Methods,
+        events: ["accountsChanged", "chainChanged"],
+        accounts: eip155Chains
+          .map((chain) => `${chain}:${address ?? ""}`)
+          .flat(),
+      },
+    };
+  }, []);
+  console.log("supportedNamespaces", supportedNamespaces, address);
+
+  const requestedChains = useMemo(() => {
+    if (!proposal) return [];
+    const required = [];
+    for (const [key, values] of Object.entries(
+      proposal.params.requiredNamespaces
+    )) {
+      const chains = key.includes(":") ? key : values.chains;
+      required.push(chains);
+    }
+
+    const optional = [];
+    for (const [key, values] of Object.entries(
+      proposal.params.optionalNamespaces
+    )) {
+      const chains = key.includes(":") ? key : values.chains;
+      optional.push(chains);
+    }
+    console.log("requestedChains", [
+      ...new Set([...required.flat(), ...optional.flat()]),
+    ]);
+
+    return [...new Set([...required.flat(), ...optional.flat()])];
+  }, [proposal]);
+
+  // the chains that are supported by the wallet from the proposal
+  const supportedChains = useMemo(
+    () =>
+      requestedChains.map((chain) => {
+        const chainData = getChainData(chain!);
+
+        if (!chainData) return null;
+
+        return chainData;
+      }),
+    [requestedChains]
+  );
+
+  // get required chains that are not supported by the wallet
+  const notSupportedChains = useMemo(() => {
+    if (!proposal) return [];
+    const required = [];
+    for (const [key, values] of Object.entries(
+      proposal.params.requiredNamespaces
+    )) {
+      const chains = key.includes(":") ? key : values.chains;
+      required.push(chains);
+    }
+    return required
+      .flat()
+      .filter(
+        (chain) =>
+          !supportedChains
+            .map(
+              (supportedChain) =>
+                `${supportedChain?.namespace}:${supportedChain?.chainId}`
+            )
+            .includes(chain!)
+      );
+  }, [proposal, supportedChains]);
+  console.log("notSupportedChains", notSupportedChains);
+
+  const namespaces = useMemo(() => {
+    try {
+      // the builder throws an exception if required namespaces are not supported
+      return buildApprovedNamespaces({
+        proposal: proposal.params,
+        supportedNamespaces,
+      });
+    } catch (e) {}
+  }, [proposal.params, supportedNamespaces, address]);
+
+  // Handle approve action, construct session namespace
+  const onApprove = useCallback(async () => {
+    if (proposal && namespaces) {
+      setIsLoadingApprove(true);
+
+      try {
+        await web3wallet.approveSession({
+          id: proposal.id,
+          namespaces,
+        });
+        SettingsStore.setSessions(
+          Object.values(web3wallet.getActiveSessions())
+        );
+      } catch (e) {
+        setIsLoadingApprove(false);
+        console.log((e as Error).message, "error");
+        return;
+      }
+    }
+    setIsLoadingApprove(false);
+    ModalStore.close();
+  }, [namespaces, proposal]);
+
+  // Hanlde reject action
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const onReject = useCallback(async () => {
+    if (proposal) {
+      try {
+        setIsLoadingReject(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await web3wallet.rejectSession({
+          id: proposal.id,
+          reason: getSdkError("USER_REJECTED_METHODS"),
+        });
+      } catch (e) {
+        setIsLoadingReject(false);
+        console.log((e as Error).message, "error");
+        return;
+      }
+    }
+    setIsLoadingReject(false);
+    ModalStore.close();
+  }, [proposal]);
+
+  const { icons, name, url } = proposal.params.proposer.metadata;
+
+  return (
+    <ModalContent bg={"gray.900"}>
+      <ModalHeader>Session Proposal</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody pb={6}>
+        <Container>
+          <Avatar src={icons[0]} />
+          <Text>{name}</Text>
+          <Text>{url}</Text>
+        </Container>
+      </ModalBody>
+      <ModalFooter>
+        {notSupportedChains.length > 0 ? (
+          <Alert status="info">
+            The following required chains are not supported by your wallet - $
+            {notSupportedChains.toString()}
+          </Alert>
+        ) : null}
+        <HStack>
+          <Button onClick={() => onReject()} isLoading={isLoadingReject}>
+            Reject
+          </Button>
+          <Button onClick={() => onApprove()} isLoading={isLoadingApprove}>
+            Approve
+          </Button>
+        </HStack>
+      </ModalFooter>
+    </ModalContent>
+  );
+}
