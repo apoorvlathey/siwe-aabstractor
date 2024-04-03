@@ -12,8 +12,6 @@ import { RELAYER_EVENTS } from "@walletconnect/core";
 import WalletConnect from "@/components/WalletConnect";
 import Accounts from "@/components/Accounts";
 import Modal from "@/components/Modal";
-import ModalStore from "@/src//store/ModalStore";
-import SettingsStore from "@/src/store/SettingsStore";
 
 export default function Home() {
   // Step 1 - Initialize wallets and wallet connect client

@@ -3,11 +3,10 @@ import { Modal as CModal, ModalOverlay } from "@chakra-ui/react";
 import ModalStore from "@/src/store/ModalStore";
 import { useSnapshot } from "valtio";
 import SessionProposalModal from "@/src/views/SessionProposalModal";
+import SessionSignModal from "@/src/views/SessionSignModal";
 
 export default function Modal() {
   const { open, view } = useSnapshot(ModalStore.state);
-
-  console.log({ open, view });
 
   const onClose = useCallback(() => {
     if (open) {
@@ -19,6 +18,8 @@ export default function Modal() {
     switch (view) {
       case "SessionProposalModal":
         return <SessionProposalModal />;
+      case "SessionSignModal":
+        return <SessionSignModal />;
       default:
         return null;
     }

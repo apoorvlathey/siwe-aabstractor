@@ -3,7 +3,6 @@ import {
   Alert,
   Avatar,
   Button,
-  Center,
   Container,
   HStack,
   ModalBody,
@@ -13,7 +12,11 @@ import {
   ModalHeader,
   Text,
 } from "@chakra-ui/react";
-import { SignClientTypes } from "@walletconnect/types";
+import {
+  SignClientTypes,
+  ProposalTypes,
+  SessionTypes,
+} from "@walletconnect/types";
 import { buildApprovedNamespaces, getSdkError } from "@walletconnect/utils";
 import { useSnapshot } from "valtio";
 import ModalStore from "@/src/store/ModalStore";
@@ -111,15 +114,58 @@ export default function SessionProposalModal() {
   }, [proposal, supportedChains]);
   console.log("notSupportedChains", notSupportedChains);
 
+  // const namespaces = useMemo(() => {
+  //   try {
+  //     // the builder throws an exception if required namespaces are not supported
+  //     return buildApprovedNamespaces({
+  //       proposal: proposal.params,
+  //       supportedNamespaces,
+  //     });
+  //   } catch (e) {}
+  // }, [proposal.params, supportedNamespaces, address]);
+
   const namespaces = useMemo(() => {
-    try {
-      // the builder throws an exception if required namespaces are not supported
-      return buildApprovedNamespaces({
-        proposal: proposal.params,
-        supportedNamespaces,
-      });
-    } catch (e) {}
-  }, [proposal.params, supportedNamespaces, address]);
+    const { requiredNamespaces, optionalNamespaces } = proposal.params;
+    const namespaceKey = "eip155";
+    const requiredNamespace = requiredNamespaces[namespaceKey] as
+      | ProposalTypes.BaseRequiredNamespace
+      | undefined;
+    const optionalNamespace = optionalNamespaces
+      ? optionalNamespaces[namespaceKey]
+      : undefined;
+
+    let chains: string[] | undefined =
+      requiredNamespace === undefined ? undefined : requiredNamespace.chains;
+    if (optionalNamespace && optionalNamespace.chains) {
+      if (chains) {
+        // merge chains from requiredNamespace & optionalNamespace, while avoiding duplicates
+        chains = Array.from(new Set(chains.concat(optionalNamespace.chains)));
+      } else {
+        chains = optionalNamespace.chains;
+      }
+    }
+
+    const accounts: string[] = [];
+    chains?.map((chain) => {
+      accounts.push(`${chain}:${address}`);
+      return null;
+    });
+    const namespace: SessionTypes.Namespace = {
+      accounts,
+      chains: chains,
+      methods: requiredNamespace === undefined ? [] : requiredNamespace.methods,
+      events: requiredNamespace === undefined ? [] : requiredNamespace.events,
+    };
+    namespace.methods = namespace.methods.includes("personal_sign")
+      ? namespace.methods
+      : [...namespace.methods, "personal_sign"];
+
+    console.log({ namespace });
+
+    return {
+      [namespaceKey]: namespace,
+    };
+  }, [proposal, address]);
 
   // Handle approve action, construct session namespace
   const onApprove = useCallback(async () => {
@@ -144,7 +190,7 @@ export default function SessionProposalModal() {
     ModalStore.close();
   }, [namespaces, proposal]);
 
-  // Hanlde reject action
+  // Handle reject action
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const onReject = useCallback(async () => {
     if (proposal) {
