@@ -22,13 +22,11 @@ import { useSnapshot } from "valtio";
 import ModalStore from "@/src/store/ModalStore";
 import { EIP155_CHAINS, EIP155_SIGNING_METHODS } from "@/src/data/EIP155Data";
 import { getChainData } from "@/src/data/chainsUtil";
-import { useAccount } from "wagmi";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import SettingsStore from "@/src/store/SettingsStore";
 
 export default function SessionProposalModal() {
-  const { address } = useAccount();
-
+  const { eip155Address } = useSnapshot(SettingsStore.state);
   const data = useSnapshot(ModalStore.state);
   const proposal = data?.data
     ?.proposal as SignClientTypes.EventArguments["session_proposal"];
@@ -46,12 +44,12 @@ export default function SessionProposalModal() {
         methods: eip155Methods,
         events: ["accountsChanged", "chainChanged"],
         accounts: eip155Chains
-          .map((chain) => `${chain}:${address ?? ""}`)
+          .map((chain) => `${chain}:${eip155Address}`)
           .flat(),
       },
     };
   }, []);
-  console.log("supportedNamespaces", supportedNamespaces, address);
+  console.log("supportedNamespaces", supportedNamespaces, eip155Address);
 
   const requestedChains = useMemo(() => {
     if (!proposal) return [];
@@ -147,7 +145,7 @@ export default function SessionProposalModal() {
 
     const accounts: string[] = [];
     chains?.map((chain) => {
-      accounts.push(`${chain}:${address}`);
+      accounts.push(`${chain}:${eip155Address}`);
       return null;
     });
     const namespace: SessionTypes.Namespace = {
@@ -165,7 +163,7 @@ export default function SessionProposalModal() {
     return {
       [namespaceKey]: namespace,
     };
-  }, [proposal, address]);
+  }, [proposal, eip155Address]);
 
   // Handle approve action, construct session namespace
   const onApprove = useCallback(async () => {

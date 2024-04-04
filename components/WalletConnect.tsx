@@ -3,8 +3,10 @@ import { Box, Button, Input } from "@chakra-ui/react";
 import { parseUri } from "@walletconnect/utils";
 import ModalStore from "@/src/store/ModalStore";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
+import SettingsStore from "@/src/store/SettingsStore";
 
 export default function WalletConnect() {
+  const [address, setAddress] = useState("");
   const [uri, setUri] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -50,6 +52,15 @@ export default function WalletConnect() {
 
   return (
     <Box>
+      <Input
+        placeholder="address"
+        value={address}
+        onChange={(e) => {
+          const value = e.target.value;
+          setAddress(value);
+          SettingsStore.setEIP155Address(value);
+        }}
+      />
       <Input
         placeholder="uri"
         value={uri}

@@ -1,31 +1,29 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { createWeb3Wallet, web3wallet } from "@/src/utils/WalletConnectUtil";
-import SettingsStore from "@/src/store/SettingsStore";
+import { useCallback, useEffect, useState } from "react";
+import { createWeb3Wallet } from "@/src/utils/WalletConnectUtil";
 import { useAccount } from "wagmi";
 
 export default function useInitialization() {
-  const { address } = useAccount();
+  const { isConnected } = useAccount();
 
   const [initialized, setInitialized] = useState(false);
 
   const onInitialize = useCallback(async () => {
-    if (!address) return;
+    if (!isConnected) return;
 
     try {
-      SettingsStore.setEIP155Address(address);
       await createWeb3Wallet();
       setInitialized(true);
     } catch (err: unknown) {
       console.error("Initialization failed", err);
       alert(err);
     }
-  }, [address]);
+  }, [isConnected]);
 
   useEffect(() => {
     if (!initialized) {
       onInitialize();
     }
-  }, [initialized, onInitialize, address]);
+  }, [initialized, onInitialize, isConnected]);
 
   return initialized;
 }
