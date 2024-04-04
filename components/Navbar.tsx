@@ -1,7 +1,5 @@
 import { useRouter } from "next/navigation";
 import { Center, Flex, Heading, Spacer } from "@chakra-ui/react";
-import { ConnectButton } from "@/components/ConnectButton";
-import { useAccount } from "wagmi";
 
 export default function Navbar({
   hideConnectWalletBtn,
@@ -9,8 +7,6 @@ export default function Navbar({
   hideConnectWalletBtn?: boolean;
 }) {
   const router = useRouter();
-
-  const { isConnected } = useAccount();
 
   return (
     <Flex
@@ -21,14 +17,14 @@ export default function Navbar({
       borderColor={"brand.greenLight"}
     >
       <Spacer />
-      <Center flex="1" flexDir={"column"}>
+      <Center flex="1" flexDir={"column"} minW={"80%"}>
         <Heading
           cursor={"pointer"}
           onClick={() => {
             router.push("/");
           }}
         >
-          Web3 Starter
+          SIWE AAbstractor
         </Heading>
         <Center>
           <Heading
@@ -37,22 +33,12 @@ export default function Navbar({
             fontStyle={"italic"}
             fontWeight={"light"}
           >
-            Project tagline
+            Connect your Smart Accounts to dapps via SIWE (Sign-In With
+            Ethereum)
           </Heading>
         </Center>
       </Center>
-
-      <Center flex="1" justifyContent={"end"}>
-        {hideConnectWalletBtn ? (
-          isConnected ? (
-            <ConnectButton />
-          ) : (
-            ""
-          )
-        ) : (
-          <ConnectButton />
-        )}
-      </Center>
+      <Spacer />
     </Flex>
   );
 }

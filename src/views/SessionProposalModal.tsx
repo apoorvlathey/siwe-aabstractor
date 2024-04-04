@@ -3,7 +3,8 @@ import {
   Alert,
   Avatar,
   Button,
-  Container,
+  Box,
+  Center,
   HStack,
   ModalBody,
   ModalCloseButton,
@@ -215,12 +216,14 @@ export default function SessionProposalModal() {
     <ModalContent bg={"gray.900"}>
       <ModalHeader>Session Proposal</ModalHeader>
       <ModalCloseButton />
-      <ModalBody pb={6}>
-        <Container>
-          <Avatar src={icons[0]} />
-          <Text>{name}</Text>
-          <Text>{url}</Text>
-        </Container>
+      <ModalBody>
+        <Center>
+          <Avatar src={icons[0]} mr="2rem" />
+          <Box>
+            <Text>{name}</Text>
+            <Text color={"whiteAlpha.600"}>{url}</Text>
+          </Box>
+        </Center>
       </ModalBody>
       <ModalFooter>
         {notSupportedChains.length > 0 ? (
@@ -230,10 +233,18 @@ export default function SessionProposalModal() {
           </Alert>
         ) : null}
         <HStack>
-          <Button onClick={() => onReject()} isLoading={isLoadingReject}>
+          <Button
+            onClick={() => onReject()}
+            isLoading={isLoadingReject}
+            colorScheme={"red"}
+          >
             Reject
           </Button>
-          <Button onClick={() => onApprove()} isLoading={isLoadingApprove}>
+          <Button
+            onClick={() => onApprove()}
+            isLoading={isLoadingApprove}
+            colorScheme={"green"}
+          >
             Approve
           </Button>
         </HStack>

@@ -15,8 +15,8 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 export default function Footer() {
   return (
     <Box
-      mt="6rem"
-      position={"fixed"}
+      flexShrink={0}
+      mt="3rem"
       bottom={0}
       w={"100%"}
       bg={"blackAlpha.500"}

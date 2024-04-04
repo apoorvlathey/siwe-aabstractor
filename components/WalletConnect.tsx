@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Box, Button, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  FormControl,
+  FormLabel,
+  Center,
+} from "@chakra-ui/react";
 import { parseUri } from "@walletconnect/utils";
 import ModalStore from "@/src/store/ModalStore";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
@@ -51,24 +58,32 @@ export default function WalletConnect() {
   }
 
   return (
-    <Box>
-      <Input
-        placeholder="address"
-        value={address}
-        onChange={(e) => {
-          const value = e.target.value;
-          setAddress(value);
-          SettingsStore.setEIP155Address(value);
-        }}
-      />
-      <Input
-        placeholder="uri"
-        value={uri}
-        onChange={(e) => setUri(e.target.value)}
-      />
-      <Button onClick={() => onConnect()} isLoading={loading}>
-        Connect
-      </Button>
+    <Box w="30rem">
+      <FormControl mb="1rem">
+        <FormLabel>2. Smart Account address</FormLabel>
+        <Input
+          placeholder="address"
+          value={address}
+          onChange={(e) => {
+            const value = e.target.value;
+            setAddress(value);
+            SettingsStore.setEIP155Address(value);
+          }}
+        />
+      </FormControl>
+      <FormControl mb="1rem">
+        <FormLabel>3. WalletConnect URI (from dapp)</FormLabel>
+        <Input
+          placeholder="uri"
+          value={uri}
+          onChange={(e) => setUri(e.target.value)}
+        />
+      </FormControl>
+      <Center>
+        <Button onClick={() => onConnect()} isLoading={loading}>
+          Connect
+        </Button>
+      </Center>
     </Box>
   );
 }

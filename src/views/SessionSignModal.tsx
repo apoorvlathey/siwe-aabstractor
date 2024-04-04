@@ -12,6 +12,8 @@ import {
   ModalFooter,
   ModalHeader,
   Text,
+  Textarea,
+  Center,
 } from "@chakra-ui/react";
 
 import { useConfig } from "wagmi";
@@ -103,24 +105,36 @@ export default function SessionSignModal() {
     <ModalContent bg={"gray.900"}>
       <ModalHeader>Request a Signature</ModalHeader>
       <ModalCloseButton />
-      <ModalBody pb={6}>
-        <Container>
-          <Avatar src={icons[0]} />
-          <Text>{name}</Text>
-          <Text>{url}</Text>
+      <ModalBody>
+        <Center>
+          <Avatar src={icons[0]} mr="2rem" />
+          <Box>
+            <Text>{name}</Text>
+            <Text color={"whiteAlpha.600"}>{url}</Text>
+          </Box>
+        </Center>
+        <Container mt="1rem">
+          <Box color="whiteAlpha.500">Chain: {EIP155_CHAINS[chainId].name}</Box>
+          <Box>
+            <Text color="whiteAlpha.500">Message:</Text>
+            <Textarea minH="15rem">{message}</Textarea>
+          </Box>
         </Container>
       </ModalBody>
       <ModalFooter>
-        <Box>Chain: {EIP155_CHAINS[chainId].name}</Box>
-        <Box>
-          <Text>Message</Text>
-          <Text>{message}</Text>
-        </Box>
         <HStack>
-          <Button onClick={() => onReject()} isLoading={isLoadingReject}>
+          <Button
+            onClick={() => onReject()}
+            isLoading={isLoadingReject}
+            colorScheme={"red"}
+          >
             Reject
           </Button>
-          <Button onClick={() => onApprove()} isLoading={isLoadingApprove}>
+          <Button
+            onClick={() => onApprove()}
+            isLoading={isLoadingApprove}
+            colorScheme={"green"}
+          >
             Approve
           </Button>
         </HStack>

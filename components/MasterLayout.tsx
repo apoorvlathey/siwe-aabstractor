@@ -11,10 +11,12 @@ export default function MasterLayout({
   hideConnectWalletBtn?: boolean;
 }) {
   return (
-    <Box minHeight="100vh" position="relative">
-      <Navbar hideConnectWalletBtn={hideConnectWalletBtn} />
-      <Spacer />
-      {children}
+    <Box display={"flex"} flexDir={"column"} minHeight="100vh">
+      <Box flexGrow={1}>
+        <Navbar hideConnectWalletBtn={hideConnectWalletBtn} />
+        <Spacer />
+        {children}
+      </Box>
       <Footer />
     </Box>
   );

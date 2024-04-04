@@ -2,7 +2,7 @@
 export const runtime = "nodejs";
 
 import { useEffect } from "react";
-import { Center, Text } from "@chakra-ui/react";
+import { Center, Text, Box } from "@chakra-ui/react";
 import MasterLayout from "@/components/MasterLayout";
 
 import useInitialization from "@/src/hooks/useInitialization";
@@ -12,6 +12,8 @@ import { RELAYER_EVENTS } from "@walletconnect/core";
 import WalletConnect from "@/components/WalletConnect";
 import Accounts from "@/components/Accounts";
 import Modal from "@/components/Modal";
+import { ConnectButton } from "@/components/ConnectButton";
+import { useAccount } from "wagmi";
 
 export default function Home() {
   // Step 1 - Initialize wallets and wallet connect client
@@ -33,14 +35,18 @@ export default function Home() {
   return (
     <MasterLayout hideConnectWalletBtn={false}>
       <Center flexDir={"column"} mt={"3rem"}>
-        <Text fontWeight={"bold"} fontSize={"xl"}>
-          {initialized ? (
-            <>
-              <WalletConnect />
-              {/* <Accounts /> */}
-            </>
-          ) : null}
-        </Text>
+        <Box mb="2rem">
+          <Text>1. Connect to EOA that controls the smart account:</Text>
+          <Center>
+            <ConnectButton />
+          </Center>
+        </Box>
+        {initialized ? (
+          <>
+            <WalletConnect />
+            {/* <Accounts /> */}
+          </>
+        ) : null}
       </Center>
 
       <Modal />

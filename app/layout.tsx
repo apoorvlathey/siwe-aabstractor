@@ -6,8 +6,9 @@ import Analytics from "@/components/Analytics";
 const poppins = Poppins({ weight: "400", subsets: ["latin"] });
 
 const _metadata = {
-  title: "Web3 Starter",
-  description: "Web3 Starter Description",
+  title: "SIWE AAbstractor",
+  description:
+    "UI to connect your Smart Accounts to dapps via SIWE (Sign-In With Ethereum).",
 };
 
 export const metadata: Metadata = {

@@ -17,7 +17,7 @@ import {
   rainbowWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { http, WagmiProvider, createConfig } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { mainnet, sepolia } from "wagmi/chains";
 
 const appName = "SIWE Smart Accounts";
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID!;
@@ -34,8 +34,9 @@ const connectors = connectorsForWallets(
 
 const config = createConfig({
   connectors,
-  chains: [sepolia],
+  chains: [mainnet, sepolia],
   transports: {
+    [mainnet.id]: http(),
     [sepolia.id]: http(),
   },
 });
