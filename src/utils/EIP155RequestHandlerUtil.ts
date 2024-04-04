@@ -37,16 +37,20 @@ export async function approveEIP155Request(requestEvent: RequestEventArgs) {
           params: request.params,
         });
 
-        // == Injected wallet with same address as Impersonator for testing ==
-        // connect injected wallet to impersonator
-        await window.ethereum!.request({
-          method: "eth_requestAccounts",
-        });
-        // generated signature
-        const signedMessage = await window.ethereum!.request({
-          method: "personal_sign",
-          params: JSON.parse(JSON.stringify(request.params)),
-        });
+        // // == Injected wallet with same address as Impersonator for testing ==
+        // // connect injected wallet to impersonator
+        // await window.ethereum!.request({
+        //   method: "eth_requestAccounts",
+        // });
+        // // generated signature
+        // const signedMessage = await window.ethereum!.request({
+        //   method: "personal_sign",
+        //   params: JSON.parse(JSON.stringify(request.params)),
+        // });
+
+        // we can return 0x here, as smart accounts can't actually sign
+        // the dapp verifies by calling `isValidSignature` on the contract
+        const signedMessage = "0x";
 
         return formatJsonRpcResult(id, signedMessage);
       } catch (error: any) {
