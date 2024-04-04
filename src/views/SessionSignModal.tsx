@@ -117,7 +117,9 @@ export default function SessionSignModal() {
           <Box color="whiteAlpha.500">Chain: {EIP155_CHAINS[chainId].name}</Box>
           <Box>
             <Text color="whiteAlpha.500">Message:</Text>
-            <Textarea minH="15rem">{message}</Textarea>
+            <Textarea minH="15rem" disabled>
+              {message}
+            </Textarea>
           </Box>
         </Container>
       </ModalBody>
