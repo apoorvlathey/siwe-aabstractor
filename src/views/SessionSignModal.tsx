@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useState } from "react";
 import {
-  Alert,
   Avatar,
   Box,
   Button,
@@ -15,6 +14,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+import { useConfig } from "wagmi";
+import { signMessage } from "wagmi/actions";
+
 import ModalStore from "@/src/store/ModalStore";
 import {
   approveEIP155Request,
@@ -25,6 +27,8 @@ import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import { EIP155_CHAINS } from "../data/EIP155Data";
 
 export default function SessionSignModal() {
+  const config = useConfig();
+
   // Get request and wallet data from store
   const requestEvent = ModalStore.state.data?.requestEvent;
   const requestSession = ModalStore.state.data?.requestSession;
@@ -43,11 +47,21 @@ export default function SessionSignModal() {
   // Get message, convert it to UTF8 string if it is valid hex
   const message = getSignParamsMessage(request.params);
 
+  const signMsg = useCallback(
+    async (msg: string) => {
+      const signature = await signMessage(config, {
+        message: msg,
+      });
+      return signature;
+    },
+    [config]
+  );
+
   // Handle approve action (logic varies based on request method)
   const onApprove = useCallback(async () => {
     if (requestEvent) {
       setIsLoadingApprove(true);
-      const response = await approveEIP155Request(requestEvent);
+      const response = await approveEIP155Request(requestEvent, signMsg);
       try {
         await web3wallet.respondSessionRequest({
           topic,

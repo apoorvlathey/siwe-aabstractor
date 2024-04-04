@@ -1,6 +1,6 @@
 import { Verify, SessionTypes } from "@walletconnect/types";
 import { proxy } from "valtio";
-import { sepolia } from "wagmi";
+import { sepolia } from "wagmi/chains";
 
 /**
  * Types

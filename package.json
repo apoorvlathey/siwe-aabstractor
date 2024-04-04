@@ -19,7 +19,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@json-rpc-tools/utils": "^1.7.6",
-    "@rainbow-me/rainbowkit": "^1.0.8",
+    "@rainbow-me/rainbowkit": "^2.0.5",
+    "@tanstack/react-query": "^5.28.14",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
@@ -42,8 +43,8 @@
     "react-type-animation": "^3.1.0",
     "typescript": "5.0.4",
     "valtio": "^1.13.2",
-    "viem": "^1.5.4",
-    "wagmi": "^1.3.10"
+    "viem": "^2.9.9",
+    "wagmi": "^2.5.18"
   },
   "devDependencies": {
     "lokijs": "^1.5.12",
