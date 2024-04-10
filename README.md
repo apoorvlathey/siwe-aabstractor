@@ -13,3 +13,10 @@ Steps:
 5. When the dapp sends signature request, press "Accept" and confirm in your Metamask or other connected wallet.\
    NOTE: Metamask might show a warning because the origin of the request is the dapp, but you are signing via this tool. It's safe (you may check the code in this repo) as you are not giving any approvals for the assets in your address.
 6. The dapp should now be logged-in as your smart account.
+
+---
+
+### To add new chain:
+
+1. Import the desired chain from `wagmi/chains` and add in the `app/providers.tsx` file.
+2. Add the chain info in `src/data/EIP155Data.ts` file as well.
