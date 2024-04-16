@@ -114,7 +114,10 @@ export default function SessionSignModal() {
           </Box>
         </Center>
         <Container mt="1rem">
-          <Box color="whiteAlpha.500">Chain: {EIP155_CHAINS[chainId].name}</Box>
+          <Box color="whiteAlpha.500">
+            Chain:{" "}
+            {EIP155_CHAINS[chainId] ? EIP155_CHAINS[chainId].name : chainId}
+          </Box>
           <Box>
             <Text color="whiteAlpha.500">Message:</Text>
             <Textarea minH="15rem" disabled>
