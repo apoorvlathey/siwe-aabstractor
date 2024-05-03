@@ -24,6 +24,7 @@ import {
   optimism,
   arbitrum,
   polygon,
+  arbitrumSepolia
 } from "wagmi/chains";
 
 const appName = "SIWE Smart Accounts";
@@ -41,7 +42,7 @@ const connectors = connectorsForWallets(
 
 const config = createConfig({
   connectors,
-  chains: [mainnet, sepolia, base, optimism, arbitrum, polygon],
+  chains: [mainnet, sepolia, base, optimism, arbitrum, polygon, arbitrumSepolia],
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
@@ -49,6 +50,7 @@ const config = createConfig({
     [optimism.id]: http(),
     [arbitrum.id]: http(),
     [polygon.id]: http(),
+    [arbitrumSepolia.id]: http()
   },
 });
 

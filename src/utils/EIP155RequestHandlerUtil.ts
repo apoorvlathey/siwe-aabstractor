@@ -12,7 +12,7 @@ import { formatJsonRpcError, formatJsonRpcResult } from "@json-rpc-tools/utils";
 import { SignClientTypes } from "@walletconnect/types";
 import { getSdkError } from "@walletconnect/utils";
 import SettingsStore from "@/src/store/SettingsStore";
-import { Hex } from "viem";
+import { Hex, hashMessage } from "viem";
 
 type RequestEventArgs = Omit<
   SignClientTypes.EventArguments["session_request"],
@@ -26,7 +26,7 @@ export async function approveEIP155Request(
   const { params, id } = requestEvent;
   const { chainId, request } = params;
 
-  console.log(requestEvent, chainId, "tests");
+  console.log(requestEvent, chainId, "approveEIP155Request");
 
   SettingsStore.setActiveChainId(chainId);
 
@@ -35,12 +35,16 @@ export async function approveEIP155Request(
     case EIP155_SIGNING_METHODS.ETH_SIGN:
       try {
         const message = getSignParamsMessage(request.params);
+        const hashedMessage = hashMessage(message);
+
+        const signedMessage = await signMsg(message);
         console.log({
+          PERSONAL_SIGN: "PERSONAL_SIGN",
+          hashedMessage,
+          signature: signedMessage,
           message,
           params: request.params,
         });
-
-        const signedMessage = await signMsg(message);
 
         return formatJsonRpcResult(id, signedMessage);
       } catch (error: any) {
