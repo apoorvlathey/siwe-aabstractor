@@ -10,11 +10,10 @@ export async function createWeb3Wallet() {
   web3wallet = await Web3Wallet.init({
     core,
     metadata: {
-      name: "SIWE AAbstractor",
-      description:
-        "UI to connect your Smart Accounts to dapps via SIWE (Sign-In With Ethereum).",
-      url: "https://siwe.aabstr.actor/",
-      icons: ["https://siwe.aabstr.actor/favicon.ico"],
+      name: "Impersonator",
+      description: "Login to dapps as any address",
+      url: "www.impersonator.xyz",
+      icons: ["https://www.impersonator.xyz/favicon.ico"],
     },
   });
   (window as any).web3wallet = web3wallet;

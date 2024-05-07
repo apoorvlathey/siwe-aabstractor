@@ -1,8 +1,8 @@
 "use client";
 export const runtime = "nodejs";
 
-import { useEffect } from "react";
-import { Center, Text, Box } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Container } from "@chakra-ui/react";
 import MasterLayout from "@/components/MasterLayout";
 
 import useInitialization from "@/src/hooks/useInitialization";
@@ -10,16 +10,23 @@ import useWalletConnectEventsManager from "@/src/hooks/useWalletConnectEventsMan
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import { RELAYER_EVENTS } from "@walletconnect/core";
 import WalletConnect from "@/components/WalletConnect";
-import Accounts from "@/components/Accounts";
 import Modal from "@/components/Modal";
-import { ConnectButton } from "@/components/ConnectButton";
-import { useAccount } from "wagmi";
+
+import AddressInput from "@/components/AddressInput";
 
 export default function Home() {
   // Step 1 - Initialize wallets and wallet connect client
   const initialized = useInitialization();
   // Step 2 - Once initialized, set up wallet connect event manager
   useWalletConnectEventsManager(initialized);
+
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+  const [isIFrameLoading, setIsIFrameLoading] = useState(false);
+  const [isEIP155AddressValid, setIsEIP155AddressValid] = useState(true);
+  // FIXME: these
+  const [isConnected, setIsConnected] = useState(false);
+  const appUrl = "";
+  const updateAddress = () => {};
 
   useEffect(() => {
     if (!initialized) return;
@@ -34,20 +41,21 @@ export default function Home() {
 
   return (
     <MasterLayout hideConnectWalletBtn={false}>
-      <Center flexDir={"column"} mt={"3rem"}>
-        <Box mb="2rem">
-          <Text>1. Connect to EOA that controls the smart account:</Text>
-          <Center>
-            <ConnectButton />
-          </Center>
-        </Box>
-        {initialized ? (
-          <>
-            <WalletConnect />
-            {/* <Accounts /> */}
-          </>
-        ) : null}
-      </Center>
+      <Container mt="10" mb="16" minW={["0", "0", "2xl", "2xl"]}>
+        <AddressInput
+          selectedTabIndex={selectedTabIndex}
+          isConnected={isConnected}
+          appUrl={appUrl}
+          isIFrameLoading={isIFrameLoading}
+          updateAddress={updateAddress}
+          isEIP155AddressValid={isEIP155AddressValid}
+          setIsEIP155AddressValid={setIsEIP155AddressValid}
+        />
+        <WalletConnect
+          isEIP155AddressValid={isEIP155AddressValid}
+          setIsEIP155AddressValid={setIsEIP155AddressValid}
+        />
+      </Container>
 
       <Modal />
     </MasterLayout>

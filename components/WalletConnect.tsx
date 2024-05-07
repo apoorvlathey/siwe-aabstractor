@@ -6,18 +6,73 @@ import {
   FormControl,
   FormLabel,
   Center,
+  useToast,
 } from "@chakra-ui/react";
 import { parseUri } from "@walletconnect/utils";
 import ModalStore from "@/src/store/ModalStore";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import SettingsStore from "@/src/store/SettingsStore";
+import { useSnapshot } from "valtio";
+import { getEnsAddress } from "@/helpers/utils";
+import { isAddress } from "viem";
 
-export default function WalletConnect() {
-  const [address, setAddress] = useState("");
+interface WalletConnectParams {
+  isEIP155AddressValid: boolean;
+  setIsEIP155AddressValid: (isValid: boolean) => void;
+}
+
+export default function WalletConnect({
+  isEIP155AddressValid,
+  setIsEIP155AddressValid,
+}: WalletConnectParams) {
+  const toast = useToast();
+
+  const { eip155Address } = useSnapshot(SettingsStore.state);
+
   const [uri, setUri] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const resolveAndValidateAddress = async () => {
+    let isValid;
+    let _eip155address = eip155Address;
+    if (!eip155Address) {
+      isValid = false;
+    } else {
+      // Resolve ENS
+      const resolvedAddress = await getEnsAddress(eip155Address);
+      if (resolvedAddress) {
+        SettingsStore.setEIP155Address(resolvedAddress);
+        _eip155address = resolvedAddress;
+        isValid = true;
+      } else if (isAddress(eip155Address)) {
+        isValid = true;
+      } else {
+        isValid = false;
+      }
+    }
+
+    setIsEIP155AddressValid(isValid);
+    if (!isValid) {
+      toast({
+        title: "Invalid Address",
+        description: "Address is not an ENS or Ethereum address",
+        status: "error",
+        isClosable: true,
+        duration: 4000,
+      });
+    }
+
+    return { isValid, _address: _eip155address };
+  };
+
   async function onConnect() {
+    setLoading(true);
+    const { isValid } = await resolveAndValidateAddress();
+    if (!isValid) {
+      setLoading(false);
+      return;
+    }
+
     const { topic: pairingTopic } = parseUri(uri);
     // if for some reason, the proposal is not received, we need to close the modal when the pairing expires (5mins)
     const pairingExpiredListener = ({ topic }: { topic: string }) => {
@@ -42,7 +97,6 @@ export default function WalletConnect() {
     });
 
     try {
-      setLoading(true);
       web3wallet.core.pairing.events.on(
         "pairing_expire",
         pairingExpiredListener
@@ -58,25 +112,14 @@ export default function WalletConnect() {
   }
 
   return (
-    <Box w="30rem">
-      <FormControl mb="1rem">
-        <FormLabel>2. Smart Account address</FormLabel>
+    <>
+      <FormControl mt="1rem" mb="1rem">
+        <FormLabel fontWeight={"bold"}>WalletConnect URI (from dapp)</FormLabel>
         <Input
-          placeholder="address"
-          value={address}
-          onChange={(e) => {
-            const value = e.target.value;
-            setAddress(value);
-            SettingsStore.setEIP155Address(value);
-          }}
-        />
-      </FormControl>
-      <FormControl mb="1rem">
-        <FormLabel>3. WalletConnect URI (from dapp)</FormLabel>
-        <Input
-          placeholder="uri"
+          placeholder="wc:xyz123..."
           value={uri}
           onChange={(e) => setUri(e.target.value)}
+          bg={"brand.lightBlack"}
         />
       </FormControl>
       <Center>
@@ -84,6 +127,6 @@ export default function WalletConnect() {
           Connect
         </Button>
       </Center>
-    </Box>
+    </>
   );
 }

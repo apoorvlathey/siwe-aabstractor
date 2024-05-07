@@ -6,9 +6,9 @@ import Analytics from "@/components/Analytics";
 const poppins = Poppins({ weight: "400", subsets: ["latin"] });
 
 const _metadata = {
-  title: "SIWE AAbstractor",
+  title: "Impersonator",
   description:
-    "UI to connect your Smart Accounts to dapps via SIWE (Sign-In With Ethereum).",
+    "Impersonate any Ethereum Account and Login into DApps via WalletConnect, iframe or Browser extension!",
 };
 
 export const metadata: Metadata = {

@@ -1,5 +1,17 @@
 import { useRouter } from "next/navigation";
-import { Center, Flex, Heading, Spacer } from "@chakra-ui/react";
+import {
+  Center,
+  Flex,
+  Heading,
+  Spacer,
+  HStack,
+  Image,
+  Text,
+  Box,
+  Link,
+} from "@chakra-ui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 export default function Navbar({
   hideConnectWalletBtn,
@@ -9,13 +21,7 @@ export default function Navbar({
   const router = useRouter();
 
   return (
-    <Flex
-      pt={"10"}
-      pr={"1rem"}
-      pb={4}
-      borderBottom="1px"
-      borderColor={"brand.greenLight"}
-    >
+    <Flex py={4} pr={"1rem"} borderBottom="1px" borderColor={"gray.400"}>
       <Spacer />
       <Center flex="1" flexDir={"column"} minW={"80%"}>
         <Heading
@@ -24,21 +30,37 @@ export default function Navbar({
             router.push("/");
           }}
         >
-          SIWE AAbstractor
+          <HStack>
+            <Image
+              src="/logo-no-bg.png"
+              alt="Impersonator logo"
+              w="3rem"
+              mr="1rem"
+            />
+            <Text>Impersonator</Text>
+          </HStack>
         </Heading>
-        <Center>
+        {/* <Center>
           <Heading
             mt={2}
             fontSize={20}
             fontStyle={"italic"}
             fontWeight={"light"}
           >
-            Connect your Smart Accounts to dapps via SIWE (Sign-In With
-            Ethereum)
+            Connect to dapps as ANY address
           </Heading>
-        </Center>
+        </Center> */}
       </Center>
-      <Spacer />
+      <Flex flex="1" justifyContent="flex-end" alignItems={"center"}>
+        <Box pl="1rem">
+          <Link
+            href={"https://github.com/impersonator-eth/impersonator"}
+            isExternal
+          >
+            <FontAwesomeIcon icon={faGithub} size="2x" />
+          </Link>
+        </Box>
+      </Flex>
     </Flex>
   );
 }

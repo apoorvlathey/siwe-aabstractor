@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Avatar,
@@ -33,6 +33,11 @@ export default function SessionProposalModal() {
     ?.proposal as SignClientTypes.EventArguments["session_proposal"];
   const [isLoadingApprove, setIsLoadingApprove] = useState(false);
   const [isLoadingReject, setIsLoadingReject] = useState(false);
+
+  useEffect(() => {
+    // auto-approve proposal request when modal is loaded
+    onApprove();
+  }, []);
 
   const supportedNamespaces = useMemo(() => {
     // eip155
@@ -233,13 +238,13 @@ export default function SessionProposalModal() {
           </Alert>
         ) : null}
         <HStack>
-          <Button
+          {/* <Button
             onClick={() => onReject()}
             isLoading={isLoadingReject}
             colorScheme={"red"}
           >
             Reject
-          </Button>
+          </Button> */}
           <Button
             onClick={() => onApprove()}
             isLoading={isLoadingApprove}
