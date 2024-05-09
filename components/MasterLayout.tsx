@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import { Box, Spacer } from "@chakra-ui/react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";

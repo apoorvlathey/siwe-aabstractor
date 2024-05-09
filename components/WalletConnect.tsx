@@ -17,22 +17,19 @@ import { getEnsAddress } from "@/helpers/utils";
 import { isAddress } from "viem";
 
 interface WalletConnectParams {
-  isEIP155AddressValid: boolean;
   setIsEIP155AddressValid: (isValid: boolean) => void;
-  initialized: boolean;
 }
 
 export default function WalletConnect({
-  isEIP155AddressValid,
   setIsEIP155AddressValid,
-  initialized,
 }: WalletConnectParams) {
   const toast = useToast();
 
-  const { eip155Address } = useSnapshot(SettingsStore.state);
+  const { eip155Address, isConnectLoading, initialized } = useSnapshot(
+    SettingsStore.state
+  );
 
   const [uri, setUri] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const resolveAndValidateAddress = async () => {
     let isValid;
@@ -43,7 +40,6 @@ export default function WalletConnect({
       // Resolve ENS
       const resolvedAddress = await getEnsAddress(eip155Address);
       if (resolvedAddress) {
-        SettingsStore.setEIP155Address(resolvedAddress);
         _eip155address = resolvedAddress;
         isValid = true;
       } else if (isAddress(eip155Address)) {
@@ -53,7 +49,6 @@ export default function WalletConnect({
       }
     }
 
-    setIsEIP155AddressValid(isValid);
     if (!isValid) {
       toast({
         title: "Invalid Address",
@@ -68,10 +63,12 @@ export default function WalletConnect({
   };
 
   async function onConnect() {
-    setLoading(true);
-    const { isValid } = await resolveAndValidateAddress();
+    SettingsStore.setIsConnectLoading(true);
+    const { isValid, _address } = await resolveAndValidateAddress();
+    setIsEIP155AddressValid(isValid);
+    SettingsStore.setEIP155Address(_address);
     if (!isValid) {
-      setLoading(false);
+      SettingsStore.setIsConnectLoading(false);
       return;
     }
 
@@ -107,9 +104,6 @@ export default function WalletConnect({
     } catch (error) {
       console.log((error as Error).message, "error");
       ModalStore.close();
-    } finally {
-      setLoading(false);
-      // setUri("");
     }
   }
 
@@ -127,7 +121,7 @@ export default function WalletConnect({
       <Center>
         <Button
           onClick={() => onConnect()}
-          isLoading={loading}
+          isLoading={isConnectLoading}
           isDisabled={!initialized}
         >
           {!initialized ? "Initializing..." : "Connect"}

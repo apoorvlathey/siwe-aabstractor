@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { Web3WalletTypes } from "@walletconnect/web3wallet";
 import { SignClientTypes } from "@walletconnect/types";
 
@@ -8,6 +8,8 @@ import ModalStore from "@/src//store/ModalStore";
 import SettingsStore from "@/src/store/SettingsStore";
 
 export default function useWalletConnectEventsManager(initialized: boolean) {
+  const [eventsInitialized, setEventsInitialized] = useState(false);
+
   /******************************************************************************
    * 1. Open session proposal modal for confirmation / rejection
    *****************************************************************************/
@@ -75,8 +77,11 @@ export default function useWalletConnectEventsManager(initialized: boolean) {
   /******************************************************************************
    * Set up WalletConnect event listeners
    *****************************************************************************/
-  if (initialized && web3wallet) {
-    //sign
+  console.log({ initialized, web3wallet, eventsInitialized });
+  if (initialized && web3wallet && !eventsInitialized) {
+    console.log("Setting up WalletConnect event listeners...");
+    setEventsInitialized(true);
+    // sign
     web3wallet.on("session_proposal", onSessionProposal);
     web3wallet.on("session_request", onSessionRequest);
     // auth

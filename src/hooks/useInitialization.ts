@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { createWeb3Wallet } from "@/src/utils/WalletConnectUtil";
-import { useAccount } from "wagmi";
 
 export default function useInitialization() {
   const [initialized, setInitialized] = useState(false);
