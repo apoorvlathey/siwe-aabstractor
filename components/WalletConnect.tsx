@@ -19,11 +19,13 @@ import { isAddress } from "viem";
 interface WalletConnectParams {
   isEIP155AddressValid: boolean;
   setIsEIP155AddressValid: (isValid: boolean) => void;
+  initialized: boolean;
 }
 
 export default function WalletConnect({
   isEIP155AddressValid,
   setIsEIP155AddressValid,
+  initialized,
 }: WalletConnectParams) {
   const toast = useToast();
 
@@ -123,8 +125,12 @@ export default function WalletConnect({
         />
       </FormControl>
       <Center>
-        <Button onClick={() => onConnect()} isLoading={loading}>
-          Connect
+        <Button
+          onClick={() => onConnect()}
+          isLoading={loading}
+          isDisabled={!initialized}
+        >
+          {!initialized ? "Initializing..." : "Connect"}
         </Button>
       </Center>
     </>

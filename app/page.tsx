@@ -54,6 +54,7 @@ export default function Home() {
         <WalletConnect
           isEIP155AddressValid={isEIP155AddressValid}
           setIsEIP155AddressValid={setIsEIP155AddressValid}
+          initialized={initialized}
         />
       </Container>
 

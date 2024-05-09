@@ -13,7 +13,7 @@ export async function createWeb3Wallet() {
       name: "Impersonator",
       description: "Login to dapps as any address",
       url: "www.impersonator.xyz",
-      icons: ["https://www.impersonator.xyz/favicon.ico"],
+      icons: ["https://www.impersonator.xyz/logo.png"],
     },
   });
   (window as any).web3wallet = web3wallet;
