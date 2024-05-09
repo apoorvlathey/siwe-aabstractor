@@ -10,14 +10,12 @@ import {
 import { parseUri } from "@walletconnect/utils";
 import ModalStore from "@/src/store/ModalStore";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
-import SettingsStore from "@/src/store/SettingsStore";
 
 interface WalletConnectParams {
   initialized: boolean;
 }
 
 export default function WalletConnect({ initialized }: WalletConnectParams) {
-  const [address, setAddress] = useState("");
   const [uri, setUri] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -63,18 +61,6 @@ export default function WalletConnect({ initialized }: WalletConnectParams) {
 
   return (
     <Box w="30rem">
-      <FormControl mb="1rem">
-        <FormLabel>Address to Impersonate</FormLabel>
-        <Input
-          placeholder="address"
-          value={address}
-          onChange={(e) => {
-            const value = e.target.value;
-            setAddress(value);
-            SettingsStore.setEIP155Address(value);
-          }}
-        />
-      </FormControl>
       <FormControl mb="1rem">
         <FormLabel>WalletConnect URI (from dapp)</FormLabel>
         <Input

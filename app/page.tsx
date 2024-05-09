@@ -11,6 +11,7 @@ import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import { RELAYER_EVENTS } from "@walletconnect/core";
 import WalletConnect from "@/components/WalletConnect";
 import Modal from "@/components/Modal";
+import AddressInput from "@/components/AddressInput";
 
 export default function Home() {
   // Step 1 - Initialize wallets and wallet connect client
@@ -32,6 +33,7 @@ export default function Home() {
   return (
     <MasterLayout hideConnectWalletBtn={false}>
       <Center flexDir={"column"} mt={"3rem"}>
+        <AddressInput />
         <WalletConnect initialized={initialized} />
       </Center>
 
