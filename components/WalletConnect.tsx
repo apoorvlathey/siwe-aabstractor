@@ -12,7 +12,11 @@ import ModalStore from "@/src/store/ModalStore";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import SettingsStore from "@/src/store/SettingsStore";
 
-export default function WalletConnect() {
+interface WalletConnectParams {
+  initialized: boolean;
+}
+
+export default function WalletConnect({ initialized }: WalletConnectParams) {
   const [address, setAddress] = useState("");
   const [uri, setUri] = useState("");
   const [loading, setLoading] = useState(false);
@@ -60,7 +64,7 @@ export default function WalletConnect() {
   return (
     <Box w="30rem">
       <FormControl mb="1rem">
-        <FormLabel>2. Smart Account address</FormLabel>
+        <FormLabel>Address to Impersonate</FormLabel>
         <Input
           placeholder="address"
           value={address}
@@ -72,7 +76,7 @@ export default function WalletConnect() {
         />
       </FormControl>
       <FormControl mb="1rem">
-        <FormLabel>3. WalletConnect URI (from dapp)</FormLabel>
+        <FormLabel>WalletConnect URI (from dapp)</FormLabel>
         <Input
           placeholder="uri"
           value={uri}
@@ -80,8 +84,12 @@ export default function WalletConnect() {
         />
       </FormControl>
       <Center>
-        <Button onClick={() => onConnect()} isLoading={loading}>
-          Connect
+        <Button
+          onClick={() => onConnect()}
+          isLoading={loading}
+          isDisabled={!initialized}
+        >
+          {!initialized ? "Initializing..." : "Connect"}
         </Button>
       </Center>
     </Box>

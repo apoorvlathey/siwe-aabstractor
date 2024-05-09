@@ -24,19 +24,8 @@ export default function Navbar({
             router.push("/");
           }}
         >
-          SIWE AAbstractor
+          Impersonator
         </Heading>
-        <Center>
-          <Heading
-            mt={2}
-            fontSize={20}
-            fontStyle={"italic"}
-            fontWeight={"light"}
-          >
-            Connect your Smart Accounts to dapps via SIWE (Sign-In With
-            Ethereum)
-          </Heading>
-        </Center>
       </Center>
       <Spacer />
     </Flex>
