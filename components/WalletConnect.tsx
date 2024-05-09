@@ -129,6 +129,7 @@ export default function WalletConnect({
           onChange={(e) => setUri(e.target.value)}
           onPaste={(e) => {
             e.preventDefault();
+            if (!initialized) return;
             setPasted(true);
             setUri(e.clipboardData.getData("text"));
           }}
