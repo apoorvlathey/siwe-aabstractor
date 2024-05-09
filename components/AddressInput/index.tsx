@@ -15,9 +15,15 @@ import { faBook } from "@fortawesome/free-solid-svg-icons";
 import AddressBook from "./AddressBook";
 import SettingsStore from "@/src/store/SettingsStore";
 
-interface AddressInputParams {}
+interface AddressInputParams {
+  isEIP155AddressValid: boolean;
+  setIsEIP155AddressValid: (isValid: boolean) => void;
+}
 
-function AddressInput({}: AddressInputParams) {
+function AddressInput({
+  isEIP155AddressValid,
+  setIsEIP155AddressValid,
+}: AddressInputParams) {
   const {
     isOpen: isAddressBookOpen,
     onOpen: openAddressBook,
@@ -48,10 +54,10 @@ function AddressInput({}: AddressInputParams) {
               const _showAddress = e.target.value;
               setShowAddress(_showAddress);
               SettingsStore.setEIP155Address(_showAddress);
-              // setIsEIP155AddressValid(true); // remove inValid warning when user types again
+              setIsEIP155AddressValid(true); // remove inValid warning when user types again
             }}
             bg={"brand.lightBlack"}
-            // isInvalid={!isEIP155AddressValid}
+            isInvalid={!isEIP155AddressValid}
           />
           {(selectedTabIndex === 0 && isConnected) ||
           (selectedTabIndex === 1 && appUrl && !isIFrameLoading) ? (

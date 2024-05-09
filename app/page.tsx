@@ -1,8 +1,8 @@
 "use client";
 export const runtime = "nodejs";
 
-import { useEffect } from "react";
-import { Center } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Container } from "@chakra-ui/react";
 import MasterLayout from "@/components/MasterLayout";
 
 import useInitialization from "@/src/hooks/useInitialization";
@@ -19,6 +19,8 @@ export default function Home() {
   // Step 2 - Once initialized, set up wallet connect event manager
   useWalletConnectEventsManager(initialized);
 
+  const [isEIP155AddressValid, setIsEIP155AddressValid] = useState(true);
+
   useEffect(() => {
     if (!initialized) return;
     web3wallet?.core.relayer.on(RELAYER_EVENTS.connect, () => {
@@ -32,10 +34,16 @@ export default function Home() {
 
   return (
     <MasterLayout hideConnectWalletBtn={false}>
-      <Center flexDir={"column"} mt={"3rem"}>
-        <AddressInput />
-        <WalletConnect initialized={initialized} />
-      </Center>
+      <Container mt="10" mb="16" minW={["0", "0", "2xl", "2xl"]}>
+        <AddressInput
+          isEIP155AddressValid={isEIP155AddressValid}
+          setIsEIP155AddressValid={setIsEIP155AddressValid}
+        />
+        <WalletConnect
+          initialized={initialized}
+          setIsEIP155AddressValid={setIsEIP155AddressValid}
+        />
+      </Container>
 
       <Modal />
     </MasterLayout>
