@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import {
   Alert,
   Avatar,
@@ -212,6 +212,11 @@ export default function SessionProposalModal() {
 
   const { icons, name, url } = proposal.params.proposer.metadata;
 
+  // connect on load
+  useEffect(() => {
+    onApprove();
+  }, []);
+
   return (
     <ModalContent bg={"gray.900"}>
       <ModalHeader>Session Proposal</ModalHeader>
@@ -233,16 +238,17 @@ export default function SessionProposalModal() {
           </Alert>
         ) : null}
         <HStack>
-          <Button
+          {/* <Button
             onClick={() => onReject()}
             isLoading={isLoadingReject}
             colorScheme={"red"}
           >
             Reject
-          </Button>
+          </Button> */}
           <Button
             onClick={() => onApprove()}
             isLoading={isLoadingApprove}
+            loadingText={"Connecting..."}
             colorScheme={"green"}
           >
             Approve
