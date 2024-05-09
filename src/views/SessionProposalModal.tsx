@@ -215,6 +215,7 @@ export default function SessionProposalModal() {
   // connect on load
   useEffect(() => {
     onApprove();
+    SettingsStore.setIsConnectLoading(false);
   }, []);
 
   return (

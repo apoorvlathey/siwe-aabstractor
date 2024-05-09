@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -27,10 +27,10 @@ export default function WalletConnect({
 }: WalletConnectParams) {
   const toast = useToast();
 
-  const { eip155Address } = useSnapshot(SettingsStore.state);
+  const { eip155Address, isConnectLoading } = useSnapshot(SettingsStore.state);
 
   const [uri, setUri] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [pasted, setPasted] = useState(false);
 
   const resolveAndValidateAddress = async () => {
     let isValid;
@@ -64,12 +64,12 @@ export default function WalletConnect({
   };
 
   async function onConnect() {
-    setLoading(true);
+    SettingsStore.setIsConnectLoading(true);
     const { isValid, _address } = await resolveAndValidateAddress();
     setIsEIP155AddressValid(isValid);
     SettingsStore.setEIP155Address(_address);
     if (!isValid) {
-      setLoading(false);
+      SettingsStore.setIsConnectLoading(false);
       return;
     } else {
     }
@@ -106,11 +106,15 @@ export default function WalletConnect({
     } catch (error) {
       console.log((error as Error).message, "error");
       ModalStore.close();
-    } finally {
-      setLoading(false);
-      // setUri("");
     }
   }
+
+  useEffect(() => {
+    if (pasted) {
+      onConnect();
+      setPasted(false);
+    }
+  }, [uri]);
 
   return (
     <Box w="30rem">
@@ -118,14 +122,22 @@ export default function WalletConnect({
         <FormLabel>WalletConnect URI (from dapp)</FormLabel>
         <Input
           placeholder="uri"
+          bg={"brand.lightBlack"}
+          aria-label="uri"
+          autoComplete="off"
           value={uri}
           onChange={(e) => setUri(e.target.value)}
+          onPaste={(e) => {
+            e.preventDefault();
+            setPasted(true);
+            setUri(e.clipboardData.getData("text"));
+          }}
         />
       </FormControl>
       <Center>
         <Button
           onClick={() => onConnect()}
-          isLoading={loading}
+          isLoading={isConnectLoading}
           isDisabled={!initialized}
         >
           {!initialized ? "Initializing..." : "Connect"}

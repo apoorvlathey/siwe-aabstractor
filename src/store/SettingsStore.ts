@@ -10,6 +10,7 @@ interface State {
   activeChainId: string;
   currentRequestVerifyContext?: Verify.Context;
   sessions: SessionTypes.Struct[];
+  isConnectLoading: boolean;
 }
 
 /**
@@ -19,6 +20,7 @@ const state = proxy<State>({
   activeChainId: sepolia.id.toString(),
   eip155Address: "",
   sessions: [],
+  isConnectLoading: false,
 });
 
 /**
@@ -40,6 +42,10 @@ const SettingsStore = {
   },
   setSessions(sessions: SessionTypes.Struct[]) {
     state.sessions = sessions;
+  },
+
+  setIsConnectLoading(isLoading: boolean) {
+    state.isConnectLoading = isLoading;
   },
 };
 
