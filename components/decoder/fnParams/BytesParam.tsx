@@ -11,7 +11,7 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { hexToBigInt, hexToString } from "viem";
 import bigInt from "big-integer";
-import { startHexWith0x } from "@/helpers/utils";
+import { startHexWith0x } from "@/src/helpers/utils";
 import { StringParam } from "./StringParam";
 import { renderParams } from "../renderParams";
 import { UintParam } from "./UintParam";

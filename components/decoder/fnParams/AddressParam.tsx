@@ -12,7 +12,7 @@ import {
   InputRightElement,
   InputLeftElement,
 } from "@chakra-ui/react";
-import { getEnsName, getEnsAvatar } from "@/helpers/utils";
+import { getEnsName, getEnsAvatar } from "@/src/helpers/utils";
 import { CopyToClipboard } from "@/components/CopyToClipboard";
 
 interface Params {

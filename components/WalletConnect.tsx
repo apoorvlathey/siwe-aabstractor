@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import ModalStore from "@/src/store/ModalStore";
 import { web3wallet } from "@/src/utils/WalletConnectUtil";
 import SettingsStore from "@/src/store/SettingsStore";
 import { useSnapshot } from "valtio";
-import { getEnsAddress } from "@/helpers/utils";
+import { getEnsAddress } from "@/src/helpers/utils";
 import { isAddress } from "viem";
 
 interface WalletConnectParams {
@@ -30,6 +30,7 @@ export default function WalletConnect({
   );
 
   const [uri, setUri] = useState("");
+  const [pasted, setPasted] = useState(false);
 
   const resolveAndValidateAddress = async () => {
     let isValid;
@@ -107,6 +108,13 @@ export default function WalletConnect({
     }
   }
 
+  useEffect(() => {
+    if (pasted) {
+      onConnect();
+      setPasted(false);
+    }
+  }, [uri]);
+
   return (
     <>
       <FormControl mt="1rem" mb="1rem">
@@ -115,6 +123,12 @@ export default function WalletConnect({
           placeholder="wc:xyz123..."
           value={uri}
           onChange={(e) => setUri(e.target.value)}
+          onPaste={(e) => {
+            e.preventDefault();
+            if (!initialized) return;
+            setPasted(true);
+            setUri(e.clipboardData.getData("text"));
+          }}
           bg={"brand.lightBlack"}
         />
       </FormControl>

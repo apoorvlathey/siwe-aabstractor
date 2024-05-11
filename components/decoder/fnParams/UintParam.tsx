@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { HStack } from "@chakra-ui/react";
-import { ethFormatOptions, getConversion } from "@/helpers/utils";
+import { ethFormatOptions, getConversion } from "@/src/helpers/utils";
 import { SelectedOptionState } from "@/types";
 import { InputField } from "@/components/InputField";
 import { DarkSelect } from "@/components/DarkSelect";

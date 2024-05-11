@@ -16,7 +16,7 @@ import {
 import { DeleteIcon } from "@chakra-ui/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { slicedText } from "@/helpers/utils";
+import { slicedText } from "@/src/helpers/utils";
 import SettingsStore from "@/src/store/SettingsStore";
 
 const STORAGE_KEY = "address-book";
